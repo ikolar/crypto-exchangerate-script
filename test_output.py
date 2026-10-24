@@ -52,6 +52,23 @@ class OutputTests(unittest.TestCase):
             self.assertEqual(book["Rates"].max_row, 2)
             book.close()
 
+    def test_csv_never_uses_scientific_notation(self):
+        dates = pd.date_range("2026-10-20", periods=4)
+        fiat = pd.DataFrame({"USD": [1e-20, 1e20, float("nan"), 1.12]}, index=dates)
+        crypto = pd.DataFrame({
+            "BTC": ["1.38166606522e-05", "9.876543210987654321E-30", "ERROR", ""],
+        }, index=dates)
+        with TemporaryDirectory() as directory:
+            path = write_output(fiat, crypto, pd.Timestamp("2026-10-24"), Path(directory))
+            csv = pd.read_csv(path, dtype=str, keep_default_na=False).set_index("Date")
+            self.assertEqual(csv.at["2026-10-20", "BTC"], "0.0000138166606522")
+            self.assertEqual(csv.at["2026-10-21", "BTC"], "0." + "0" * 29 + "9876543210987654321")
+            self.assertEqual(csv.at["2026-10-20", "USD"], "0." + "0" * 19 + "1")
+            self.assertEqual(csv.at["2026-10-21", "USD"], "100000000000000000000")
+            self.assertEqual(csv.at["2026-10-22", "BTC"], "ERROR")
+            self.assertEqual(csv.at["2026-10-22", "USD"], "")
+            self.assertEqual(csv.at["2026-10-23", "BTC"], "")
+
     def test_daily_run_uses_yesterday_and_keeps_run_date_in_filename(self):
         for run_date in ("2026-10-24", "2027-01-01", "2024-03-01"):
             with self.subTest(run_date=run_date), TemporaryDirectory() as directory:

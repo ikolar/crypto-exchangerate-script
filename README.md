@@ -35,8 +35,10 @@ column. Excel uses a `Rates` sheet with numeric rates, real date cells displayed
 `YYYY-MM-DD`, column filters, and a frozen header row and date column. Missing
 values stay blank and download failures remain the text `ERROR`. CSV files remain
 the cache used by subsequent daily runs. The daily action commits both formats.
-Excel rate cells use decimal formatting rather than scientific notation, including
-small values such as BTC. The underlying numeric values are preserved.
+Both CSV and Excel display rates as plain decimals, never scientific notation,
+including small values such as BTC (`0.0000138166606522`, not `1.38166606522e-05`).
+CSV conversion expands exponent notation without rounding existing decimal digits;
+Excel cells retain their underlying numeric values.
 
 ## Output semantics
 

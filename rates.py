@@ -38,6 +38,7 @@ import sys
 import time
 import zipfile
 from dataclasses import dataclass
+from decimal import Decimal
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
@@ -637,6 +638,16 @@ def build_crypto(
     return crypto
 
 
+def decimal_rate(value: object) -> str:
+    """Serialize rates without exponents or rounding existing decimal digits."""
+    if pd.isna(value) or str(value).strip() in ("", "nan", "NaN"):
+        return ""
+    if str(value).strip() == "ERROR":
+        return "ERROR"
+    number = Decimal(str(value))
+    return format(number, "f") if number.is_finite() else ""
+
+
 def write_output(
     fiat: pd.DataFrame,
     crypto: pd.DataFrame,
@@ -659,8 +670,9 @@ def write_output(
         f"{OUTPUT_PREFIX}.{run_date.year:04d}.{run_date.month:02d}.{run_date.day:02d}.csv"
     )
 
-    # Blank fiat NaNs remain empty. Crypto ERROR strings remain literal ERROR.
-    merged.to_csv(out, na_rep="", date_format="%Y-%m-%d", float_format="%.12g")
+    # Format both numeric fiat cells and cached crypto strings as plain decimals.
+    csv = merged.apply(lambda column: column.map(decimal_rate))
+    csv.to_csv(out, na_rep="", date_format="%Y-%m-%d")
     # Use real numbers and dates in Excel, preserving blank cells and ERROR text.
     excel = merged.copy()
     for col in excel.columns:
