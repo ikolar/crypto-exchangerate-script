@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Build a daily, versioned CSV containing ECB fiat reference rates and
+Build daily, versioned CSV and Excel files containing ECB fiat reference rates and
 CoinMarketCap cryptocurrency rates.
 
 Rate convention (important):
@@ -646,6 +646,11 @@ def write_output(
     output_dir.mkdir(parents=True, exist_ok=True)
 
     merged = fiat.join(crypto, how="left")
+    # Older snapshots can contain an empty trailing ECB column.
+    merged = merged.loc[:, [
+        c for c in merged.columns
+        if str(c).strip() and not str(c).strip().lower().startswith("unnamed")
+    ]]
     merged.index.name = "Date"
     merged = merged.sort_index(ascending=False)
 
@@ -655,6 +660,21 @@ def write_output(
 
     # Blank fiat NaNs remain empty. Crypto ERROR strings remain literal ERROR.
     merged.to_csv(out, na_rep="", date_format="%Y-%m-%d", float_format="%.12g")
+    # Use real numbers and dates in Excel, preserving blank cells and ERROR text.
+    excel = merged.copy()
+    for col in excel.columns:
+        excel[col] = excel[col].map(
+            lambda value: float(value)
+            if pd.notna(value) and str(value).strip() not in ("", "ERROR")
+            else ("ERROR" if str(value).strip() == "ERROR" else None)
+        )
+    with pd.ExcelWriter(out.with_suffix(".xlsx"), engine="openpyxl", datetime_format="YYYY-MM-DD") as writer:
+        excel.to_excel(writer, sheet_name="Rates", na_rep="", freeze_panes=(1, 1))
+        sheet = writer.sheets["Rates"]
+        sheet.auto_filter.ref = sheet.dimensions
+        sheet.column_dimensions["A"].width = 13
+        for cell in sheet["A"][1:]:
+            cell.number_format = "YYYY-MM-DD"
     return out
 
 
@@ -709,6 +729,7 @@ def main() -> int:
     out = write_output(fiat, crypto, run_date, args.output_dir)
 
     log(f"Created: {out}")
+    log(f"Created: {out.with_suffix('.xlsx')}")
     log(f"Rows: {len(calendar):,}; fiat columns: {fiat.shape[1]}; crypto columns: {crypto.shape[1]}")
     return 0
 

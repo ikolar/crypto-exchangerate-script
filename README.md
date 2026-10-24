@@ -1,13 +1,20 @@
 # ECB + CoinMarketCap daily exchange-rate snapshots
 
-This repository generates one cumulative CSV every day:
+This repository generates matching cumulative CSV and Excel files every day:
 
 ```text
 output/eurofxref_and_crypto_rates.YYYY.MM.DD.csv
+output/eurofxref_and_crypto_rates.YYYY.MM.DD.xlsx
 ```
 
 Each snapshot contains **all dates from the ECB historical start (1999-01-04)
 through that snapshot date**, newest first.
+
+Both formats contain the same dates and currency columns, with no empty separator
+column. Excel uses a `Rates` sheet with numeric rates, real date cells displayed as
+`YYYY-MM-DD`, column filters, and a frozen header row and date column. Missing
+values stay blank and download failures remain the text `ERROR`. CSV files remain
+the cache used by subsequent daily runs. The daily action commits both formats.
 
 ## Output semantics
 
