@@ -675,6 +675,11 @@ def write_output(
         sheet.column_dimensions["A"].width = 13
         for cell in sheet["A"][1:]:
             cell.number_format = "YYYY-MM-DD"
+        for column in sheet.iter_cols(min_col=2):
+            sheet.column_dimensions[column[0].column_letter].width = 24
+            for cell in column[1:]:
+                if cell.data_type == "n":
+                    cell.number_format = "0.##############################"
     return out
 
 

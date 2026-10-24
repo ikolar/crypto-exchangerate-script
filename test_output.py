@@ -35,6 +35,8 @@ class OutputTests(unittest.TestCase):
             self.assertEqual(sheet.freeze_panes, "B2")
             self.assertEqual(sheet.auto_filter.ref, "A1:C4")
             self.assertEqual(sheet["A2"].number_format, "YYYY-MM-DD")
+            self.assertEqual(sheet["C4"].number_format, "0.##############################")
+            self.assertEqual(sheet["B3"].number_format, "0.##############################")
             workbook.close()
 
 
