@@ -105,9 +105,9 @@ The script does **not** assume yesterday's Action succeeded.
 
 Every run:
 
-1. downloads the full ECB historical ZIP (`eurofxref-hist.zip`);
-2. downloads the tiny latest ECB daily ZIP (`eurofxref.zip`) and overlays its
-   newest row;
+1. checks cached ECB historical and daily data against the publication schedule,
+   downloading missing, invalid, or stale files;
+2. combines the full historical data with the latest daily row;
 3. creates a complete daily calendar through yesterday;
 4. uses the latest existing output snapshot as a crypto cache;
 5. detects every missing/`ERROR` crypto date;
@@ -191,6 +191,41 @@ while the historical CSV uses ISO dates:
 
 The historical ECB file is the recovery source for missed runs. The daily file
 is used as an additional freshness/overlay source.
+
+### ECB download cache and `--force`
+
+Downloaded ZIPs are stored in `.cache/ecb/` (change this with `--ecb-cache-dir`).
+Each file is checked independently against the latest expected release: around
+16:00 Europe/Amsterdam on weekdays, excluding TARGET closing days (January 1,
+Good Friday, Easter Monday, May 1, December 25 and 26). The calendar follows
+daylight saving time. See the [ECB publication schedule](https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html)
+and [TARGET closing days](https://www.ecb.europa.eu/ecb/contacts/working-hours/html/index.en.html).
+
+If the latest date inside a cached file covers that release, it is reused without
+a network request. Repeated runs, weekends, holidays, and runs before publication
+therefore reuse current downloads. Existing `eurofxref-hist.zip`, `eurofxref.zip`,
+or their unzipped `.csv` equivalents in the working directory are also recognized.
+Missing, corrupt, or outdated files are downloaded and validated before replacing
+their cache entries. If a source still returns old data after its expected release,
+the next run retries it. Same-day corrections are picked up by the next scheduled
+refresh or a forced download.
+
+When nothing is downloaded, the script prints a reminder:
+
+```text
+No ECB downloads needed. Use --force to force an ECB download (explicit local CSV overrides stay local).
+```
+
+Run `python rates.py --force` to refresh both ZIPs regardless of freshness.
+`--force` affects ECB downloads only; valid cached crypto rates remain preserved.
+The explicit `--ecb-daily-file` and `--ecb-hist-file` options always use the supplied
+local CSVs, including with `--force`. Freshness uses the actual clock; `--run-date`
+only changes the snapshot's label and data cutoff.
+
+GitHub Actions restores and saves `.cache/ecb` between runs, so fresh runners can
+also skip unnecessary downloads. For manual runs, the Actions form includes a
+**Force ECB ZIP downloads** option. If GitHub evicts the cache, the next run
+downloads it again automatically. Cache files are not part of the exported data.
 
 ## GitHub Actions
 

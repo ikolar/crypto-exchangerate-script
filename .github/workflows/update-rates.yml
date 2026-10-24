@@ -2,6 +2,11 @@ name: Update ECB + crypto rates
 
 on:
   workflow_dispatch:
+    inputs:
+      force:
+        description: Force ECB ZIP downloads even when cached data is current
+        type: boolean
+        default: false
   schedule:
     # ECB publishes around 16:00 Central European local time on working days.
     # Run half an hour later, following CET/CEST automatically.
@@ -33,14 +38,28 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
 
+      - name: Restore ECB downloads
+        uses: actions/cache@v4
+        with:
+          path: .cache/ecb
+          key: ecb-zip-v1-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            ecb-zip-v1-${{ runner.os }}-
+
       - name: Generate full historical snapshot
         env:
+          FORCE_ECB: ${{ inputs.force }}
           # Optional but strongly recommended.
           # Add a GitHub Actions secret named CMC_API_KEY to use CoinMarketCap's
           # official API. If absent, rates.py uses a conservative public-site
           # fallback and writes ERROR when it detects blocking/failure.
           CMC_API_KEY: ${{ secrets.CMC_API_KEY }}
-        run: python rates.py
+        run: |
+          args=()
+          if [[ "$FORCE_ECB" == "true" ]]; then
+            args+=(--force)
+          fi
+          python rates.py "${args[@]}"
 
       - name: Commit dated snapshot
         run: |

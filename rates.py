@@ -19,8 +19,8 @@ Calendar behavior:
 - If a crypto download is blocked after 3 attempts, affected cells are "ERROR".
 
 Recovery behavior:
-- Every run downloads the ECB historical file, so a 10-day (or longer) missed
-  GitHub Actions window is automatically repaired on the next successful run.
+- ECB ZIPs are cached and refreshed when a newer scheduled release is expected,
+  so missed GitHub Actions windows are repaired by the full historical file.
 - The latest prior output snapshot is used as a crypto cache.
 - Missing or ERROR crypto cells are retried, including older gaps.
 - Filenames use the run date; data ends on the previous calendar day.
@@ -63,6 +63,7 @@ USD_CMC_ID = 2781
 OUTPUT_PREFIX = "eurofxref_and_crypto_rates"
 OUTPUT_DIR = Path("output")
 ASSET_CONFIG = Path("assets.json")
+ECB_CACHE_DIR = Path(".cache/ecb")
 LOCAL_TZ = ZoneInfo("Europe/Amsterdam")
 
 # downloader settings
@@ -229,24 +230,79 @@ def clean_ecb_frame(df: pd.DataFrame, daily: bool) -> pd.DataFrame:
     return df.sort_index()
 
 
-def download_ecb(session: requests.Session, daily_file: Path | None, hist_file: Path | None) -> pd.DataFrame:
-    if hist_file:
-        hist = pd.read_csv(hist_file)
-    else:
-        log("Downloading ECB historical ZIP...")
-        hist_resp = request_with_retries(session, ECB_HIST_ZIP)
-        hist = read_csv_from_zip(hist_resp.content, "hist")
+def latest_expected_ecb_release(now: datetime | None = None) -> pd.Timestamp:
+    """Latest 16:00 Europe/Amsterdam publication, excluding TARGET closing days."""
+    local = (now or datetime.now(LOCAL_TZ)).astimezone(LOCAL_TZ)
+    day = pd.Timestamp(local.date())
+    if local.hour < 16:
+        day -= pd.Timedelta(1, unit="D")
+    while True:
+        easter = pd.Timestamp(year=day.year, month=1, day=1) + pd.offsets.Easter()
+        holidays = {
+            pd.Timestamp(year=day.year, month=m, day=d)
+            for m, d in ((1, 1), (5, 1), (12, 25), (12, 26))
+        }
+        holidays.update((easter - pd.Timedelta(2, unit="D"), easter + pd.Timedelta(1, unit="D")))
+        if day.weekday() < 5 and day not in holidays:
+            return day
+        day -= pd.Timedelta(1, unit="D")
 
-    hist = clean_ecb_frame(hist, daily=False)
 
-    if daily_file:
-        daily = pd.read_csv(daily_file)
-    else:
-        log("Downloading ECB daily ZIP...")
-        daily_resp = request_with_retries(session, ECB_DAILY_ZIP)
-        daily = read_csv_from_zip(daily_resp.content, "eurofxref")
+def download_ecb(
+    session: requests.Session,
+    daily_file: Path | None,
+    hist_file: Path | None,
+    *,
+    cache_dir: Path = ECB_CACHE_DIR,
+    force: bool = False,
+    now: datetime | None = None,
+) -> pd.DataFrame:
+    expected = latest_expected_ecb_release(now)
+    downloads = 0
 
-    daily = clean_ecb_frame(daily, daily=True)
+    def load_source(url: str, local_file: Path | None, daily: bool) -> pd.DataFrame:
+        nonlocal downloads
+        if local_file is not None:
+            return clean_ecb_frame(pd.read_csv(local_file), daily=daily)
+
+        name = url.rsplit("/", 1)[-1]
+        cached = cache_dir / name
+        # Also recognize downloads left in the working directory by earlier runs.
+        candidates = list(dict.fromkeys((cached, Path(name), Path(name).with_suffix(".csv"))))
+        if not force:
+            for candidate in candidates:
+                if not candidate.exists():
+                    continue
+                try:
+                    raw = (
+                        pd.read_csv(candidate) if candidate.suffix == ".csv"
+                        else read_csv_from_zip(candidate.read_bytes(), "eurofxref")
+                    )
+                    frame = clean_ecb_frame(raw, daily=daily)
+                    if not frame.empty and frame.index.max() >= expected:
+                        log(f"Using cached ECB data: {candidate} (through {frame.index.max().date()})")
+                        return frame
+                except (OSError, ValueError, zipfile.BadZipFile, pd.errors.ParserError, DownloadFailed) as exc:
+                    log(f"WARNING: cannot use ECB cache {candidate}: {exc}")
+
+        log(f"Downloading ECB {'daily' if daily else 'historical'} ZIP (expected through {expected.date()})...")
+        response = request_with_retries(session, url)
+        frame = clean_ecb_frame(read_csv_from_zip(response.content, "eurofxref"), daily=daily)
+        if frame.empty:
+            raise DownloadFailed(f"ECB ZIP contained no valid dated rows: {url}")
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        staged = cached.with_suffix(".zip.tmp")
+        staged.write_bytes(response.content)
+        staged.replace(cached)
+        downloads += 1
+        if frame.index.max() < expected:
+            log(f"WARNING: ECB source is still behind its expected {expected.date()} release; the next run will retry")
+        return frame
+
+    hist = load_source(ECB_HIST_ZIP, hist_file, daily=False)
+    daily = load_source(ECB_DAILY_ZIP, daily_file, daily=True)
+    if not downloads:
+        log("No ECB downloads needed. Use --force to force an ECB download (explicit local CSV overrides stay local).")
 
     # Union columns because the historical file contains legacy currencies.
     all_cols = list(dict.fromkeys(list(hist.columns) + list(daily.columns)))
@@ -699,6 +755,8 @@ def write_output(
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
+    parser.add_argument("--ecb-cache-dir", type=Path, default=ECB_CACHE_DIR)
+    parser.add_argument("--force", action="store_true", help="Redownload ECB ZIPs regardless of cache freshness.")
     parser.add_argument(
         "--run-date",
         help="Override snapshot run date (YYYY-MM-DD); data ends the previous day.",
@@ -722,9 +780,11 @@ def main() -> int:
 
     session = make_session()
 
-    # ECB is authoritative for fiat and downloaded fresh every run. Historical
-    # data makes the job naturally self-healing after missed Action runs.
-    ecb = download_ecb(session, args.ecb_daily_file, args.ecb_hist_file)
+    # Reuse ECB downloads until the release schedule indicates newer data is due.
+    ecb = download_ecb(
+        session, args.ecb_daily_file, args.ecb_hist_file,
+        cache_dir=args.ecb_cache_dir, force=args.force,
+    )
     ecb = ecb[ecb.index <= data_end]
 
     if ecb.empty:
