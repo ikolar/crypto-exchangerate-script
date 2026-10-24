@@ -1,0 +1,156 @@
+{
+  "major_cryptocurrencies": [
+    {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "cmc_id": 1,
+      "first_historical_date": "2010-07-13"
+    },
+    {
+      "symbol": "ETH",
+      "name": "Ethereum",
+      "cmc_id": 1027,
+      "first_historical_date": "2015-08-07"
+    },
+    {
+      "symbol": "BNB",
+      "name": "BNB",
+      "cmc_id": 1839,
+      "first_historical_date": "2017-07-25"
+    },
+    {
+      "symbol": "XRP",
+      "name": "XRP",
+      "cmc_id": 52,
+      "first_historical_date": "2013-08-04"
+    },
+    {
+      "symbol": "SOL",
+      "name": "Solana",
+      "cmc_id": 5426,
+      "first_historical_date": "2020-04-10"
+    },
+    {
+      "symbol": "DOGE",
+      "name": "Dogecoin",
+      "cmc_id": 74,
+      "first_historical_date": "2013-12-15"
+    },
+    {
+      "symbol": "TRX",
+      "name": "TRON",
+      "cmc_id": 1958,
+      "first_historical_date": "2017-09-13"
+    },
+    {
+      "symbol": "ADA",
+      "name": "Cardano",
+      "cmc_id": 2010,
+      "first_historical_date": "2017-10-01"
+    },
+    {
+      "symbol": "HYPE",
+      "name": "Hyperliquid",
+      "cmc_id": 32196,
+      "first_historical_date": "2024-11-29"
+    },
+    {
+      "symbol": "XLM",
+      "name": "Stellar",
+      "cmc_id": 512,
+      "first_historical_date": "2014-08-05"
+    },
+    {
+      "symbol": "BCH",
+      "name": "Bitcoin Cash",
+      "cmc_id": 1831,
+      "first_historical_date": "2017-07-23"
+    },
+    {
+      "symbol": "LINK",
+      "name": "Chainlink",
+      "cmc_id": 1975,
+      "first_historical_date": "2017-09-20"
+    },
+    {
+      "symbol": "SUI",
+      "name": "Sui",
+      "cmc_id": 20947,
+      "first_historical_date": "2023-05-03"
+    },
+    {
+      "symbol": "AVAX",
+      "name": "Avalanche",
+      "cmc_id": 5805,
+      "first_historical_date": "2020-09-22"
+    },
+    {
+      "symbol": "HBAR",
+      "name": "Hedera",
+      "cmc_id": 4642,
+      "first_historical_date": "2019-09-17"
+    },
+    {
+      "symbol": "LTC",
+      "name": "Litecoin",
+      "cmc_id": 2,
+      "first_historical_date": "2013-04-28"
+    },
+    {
+      "symbol": "TON",
+      "name": "Toncoin",
+      "cmc_id": 11419,
+      "first_historical_date": "2021-08-26"
+    },
+    {
+      "symbol": "SHIB",
+      "name": "Shiba Inu",
+      "cmc_id": 5994,
+      "first_historical_date": "2020-08-01"
+    },
+    {
+      "symbol": "DOT",
+      "name": "Polkadot",
+      "cmc_id": 6636,
+      "first_historical_date": "2020-08-20"
+    },
+    {
+      "symbol": "AAVE",
+      "name": "Aave",
+      "cmc_id": 7278,
+      "first_historical_date": "2020-10-04"
+    }
+  ],
+  "stablecoins": [
+    {
+      "symbol": "USDT",
+      "name": "Tether USDt",
+      "cmc_id": 825,
+      "first_historical_date": "2015-02-25"
+    },
+    {
+      "symbol": "USDC",
+      "name": "USDC",
+      "cmc_id": 3408,
+      "first_historical_date": "2018-10-08"
+    },
+    {
+      "symbol": "USDE",
+      "name": "Ethena USDe",
+      "cmc_id": 29470,
+      "first_historical_date": "2023-12-31"
+    },
+    {
+      "symbol": "USDS",
+      "name": "USDS",
+      "cmc_id": 33039,
+      "first_historical_date": "2024-09-19"
+    },
+    {
+      "symbol": "DAI",
+      "name": "Dai",
+      "cmc_id": 4943,
+      "first_historical_date": "2019-11-22"
+    }
+  ]
+}
