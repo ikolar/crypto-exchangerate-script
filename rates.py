@@ -12,9 +12,9 @@ Examples:
 
 Calendar behavior:
 - ECB publishes fiat rates around 16:00 Central European local time on banking working days.
-- The output is reindexed to EVERY calendar day.
+- The output includes EVERY calendar day through yesterday (Europe/Amsterdam).
 - Non-ECB days (weekends/holidays) have blank fiat cells.
-- Crypto cells are populated daily where data is available.
+- Crypto cells use completed daily prices where data is available, including weekends.
 - Dates before a coin's CoinMarketCap first_historical_data remain blank.
 - If a crypto download is blocked after 3 attempts, affected cells are "ERROR".
 
@@ -23,7 +23,7 @@ Recovery behavior:
   GitHub Actions window is automatically repaired on the next successful run.
 - The latest prior output snapshot is used as a crypto cache.
 - Missing or ERROR crypto cells are retried, including older gaps.
-- Every output file contains ALL history up to the run date.
+- Filenames use the run date; data ends on the previous calendar day.
 """
 
 from __future__ import annotations
@@ -646,6 +646,7 @@ def write_output(
     output_dir.mkdir(parents=True, exist_ok=True)
 
     merged = fiat.join(crypto, how="left")
+    merged = merged.loc[merged.index < run_date.normalize()]
     # Older snapshots can contain an empty trailing ECB column.
     merged = merged.loc[:, [
         c for c in merged.columns
@@ -688,7 +689,7 @@ def main() -> int:
     parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
     parser.add_argument(
         "--run-date",
-        help="Override run date (YYYY-MM-DD), useful for testing/backfills.",
+        help="Override snapshot run date (YYYY-MM-DD); data ends the previous day.",
     )
     parser.add_argument(
         "--ecb-daily-file",
@@ -705,20 +706,21 @@ def main() -> int:
     run_date = (
         pd.Timestamp(args.run_date).normalize() if args.run_date else today_local()
     )
+    data_end = run_date - pd.Timedelta(1, unit="D")
 
     session = make_session()
 
     # ECB is authoritative for fiat and downloaded fresh every run. Historical
     # data makes the job naturally self-healing after missed Action runs.
     ecb = download_ecb(session, args.ecb_daily_file, args.ecb_hist_file)
-    ecb = ecb[ecb.index <= run_date]
+    ecb = ecb[ecb.index <= data_end]
 
     if ecb.empty:
         raise RuntimeError("ECB dataset is empty after filtering")
 
     # The calendar starts at the ECB historical start (1999-01-04) and includes
-    # every calendar day through the output date.
-    calendar = pd.date_range(ecb.index.min(), run_date, freq="D")
+    # every completed calendar day. Today's fiat rates are included next run.
+    calendar = pd.date_range(ecb.index.min(), data_end, freq="D")
 
     # Reindexing is what creates blank weekend/holiday fiat rows.
     fiat = ecb.reindex(calendar)
@@ -730,11 +732,12 @@ def main() -> int:
 
     assets = resolve_assets(session, config)
 
-    crypto = build_crypto(session, calendar, previous, assets, run_date, fiat.get("USD"))
+    crypto = build_crypto(session, calendar, previous, assets, data_end, fiat.get("USD"))
     out = write_output(fiat, crypto, run_date, args.output_dir)
 
     log(f"Created: {out}")
     log(f"Created: {out.with_suffix('.xlsx')}")
+    log(f"Data through: {data_end.date()} (completed days only)")
     log(f"Rows: {len(calendar):,}; fiat columns: {fiat.shape[1]}; crypto columns: {crypto.shape[1]}")
     return 0
 

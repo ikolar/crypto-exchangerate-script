@@ -8,7 +8,27 @@ output/eurofxref_and_crypto_rates.YYYY.MM.DD.xlsx
 ```
 
 Each snapshot contains **all dates from the ECB historical start (1999-01-04)
-through that snapshot date**, newest first.
+through the day before the snapshot's run date**, newest first. The filename's
+date is the **run date**, using Europe/Amsterdam local time, not the last data date.
+
+### Completed days only
+
+Both CSV and Excel end yesterday. Crypto uses completed daily closing prices,
+not live intraday prices, so the unfinished current day is excluded for all
+currencies. At the daily 16:30 Europe/Amsterdam update on October 24, 2026, the
+files are named `eurofxref_and_crypto_rates.2026.10.24.csv` and `.xlsx`, and their
+newest data row is **2026-10-23**.
+
+Today's ECB fiat rates are also withheld until tomorrow's snapshot, even if
+already published. Weekend and holiday rows remain in the calendar: fiat stays
+blank when the ECB publishes no rate, while crypto is included when available.
+For example, Sunday's snapshot includes Saturday's crypto closing prices and
+blank Saturday fiat cells. Missing source observations can still leave gaps and
+are retried on later runs.
+
+`--run-date YYYY-MM-DD` overrides the run date and applies the same rule: data
+ends the preceding calendar day. Existing cached rows from the run date or later
+are excluded. The script logs the last data date when it creates the files.
 
 Both formats contain the same dates and currency columns, with no empty separator
 column. Excel uses a `Rates` sheet with numeric rates, real date cells displayed as
@@ -70,8 +90,8 @@ may differ slightly from a direct CoinMarketCap EUR quote.
 ECB rates are never carried forward for this conversion. If the same-day USD
 reference rate is missing (such as weekends or holidays), no USD retry is made.
 If neither source returns an observation, the cell stays blank; a failed request
-leaves `ERROR`. Both are retried on later runs. Today's final daily price may not
-be available yet.
+leaves `ERROR`. Both are retried on later runs. The unfinished current day is
+excluded from the snapshot entirely.
 
 The USD retry repairs source gaps such as June 28–29, 2022, where CoinMarketCap's
 EUR history is missing observations present in its USD history. It runs during
@@ -86,7 +106,7 @@ Every run:
 1. downloads the full ECB historical ZIP (`eurofxref-hist.zip`);
 2. downloads the tiny latest ECB daily ZIP (`eurofxref.zip`) and overlays its
    newest row;
-3. creates a complete daily calendar through the current date;
+3. creates a complete daily calendar through yesterday;
 4. uses the latest existing output snapshot as a crypto cache;
 5. detects every missing/`ERROR` crypto date;
 6. downloads those missing crypto windows;
