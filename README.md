@@ -163,8 +163,14 @@ is used as an additional freshness/overlay source.
 
 ## GitHub Actions
 
-The workflow runs daily at 14:30 UTC, after the ECB's normal 14:10 CET/CEST
-publication window, and can also be started manually from the Actions tab.
+The workflow runs daily at **16:30 Europe/Amsterdam** (CET in winter, CEST in
+summer), half an hour after the ECB's usual 16:00 publication time. The rate-setting
+procedure around 14:10 is earlier than publication; see the
+[ECB reference-rate page](https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html).
+GitHub's schedule uses `cron: "30 16 * * *"` with `timezone: "Europe/Amsterdam"`
+to follow daylight saving time automatically. GitHub may delay scheduled starts.
+The workflow also runs on weekends for crypto data and can be started manually
+from the Actions tab.
 
 The workflow requires:
 

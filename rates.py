@@ -11,7 +11,7 @@ Examples:
     BTC = 0.000014  means 1 EUR = 0.000014 BTC
 
 Calendar behavior:
-- ECB publishes fiat rates daily at circa 14:15, but only on banking working days.
+- ECB publishes fiat rates around 16:00 Central European local time on banking working days.
 - The output is reindexed to EVERY calendar day.
 - Non-ECB days (weekends/holidays) have blank fiat cells.
 - Crypto cells are populated daily where data is available.

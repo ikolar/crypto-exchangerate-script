@@ -3,9 +3,10 @@ name: Update ECB + crypto rates
 on:
   workflow_dispatch:
   schedule:
-    # ECB publishes around 14:10 CET/CEST on publication days.
-    # 14:30 UTC is safely after that year-round.
-    - cron: "30 14 * * *"
+    # ECB publishes around 16:00 Central European local time on working days.
+    # Run half an hour later, following CET/CEST automatically.
+    - cron: "30 16 * * *"
+      timezone: "Europe/Amsterdam"
 
 permissions:
   contents: write
