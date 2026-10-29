@@ -133,6 +133,14 @@ IDs and start dates were verified on 2026-10-24 using CoinMarketCap's
 output column retains its existing name and uses ID 11419, currently listed
 by CoinMarketCap as "Gram (prev. Toncoin)" (`GRAM`).
 
+On 2026-10-29, the TON column in the published CSV and Excel snapshots was
+rechecked and corrected against CMC ID 11419. Earlier cached values had come
+from the unrelated TON Token (ID 6890); changing the configured ID had not
+replaced those cached numbers. The repaired series uses the inverse of ID
+11419's daily EUR closing price, with USD/ECB conversion for June 28–29, 2022.
+Dates before its first historical observation (2021-08-26) are blank. The column
+name remains `TON`; values are coins per EUR. Other currency columns are unchanged.
+
 For newly added assets without both fields, the script falls back to the asset
 map, paginating to include newer assets and using the authenticated API when
 `CMC_API_KEY` is set. Add a verified ID and historical start date to keep new
