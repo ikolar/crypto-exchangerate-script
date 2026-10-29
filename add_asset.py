@@ -86,7 +86,7 @@ def add_asset(url, config_path=ASSET_CONFIG, *, group="major_cryptocurrencies", 
         if str(asset.get("cmc_id")) == str(entry["cmc_id"]):
             return asset, False
 
-    used = {asset["symbol"].upper() for asset in existing} | {"DATE"}
+    used = {asset["symbol"].upper() for asset in existing + config.get("fiat", [])} | {"DATE"}
     # Keep new crypto columns distinct from fiat columns in existing snapshots too.
     snapshots = sorted((config_path.parent / "output").glob("eurofxref_and_crypto_rates.*.csv"))
     if snapshots:

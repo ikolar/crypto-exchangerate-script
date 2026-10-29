@@ -32,7 +32,10 @@ are excluded. The script logs the last data date when it creates the files.
 
 Both formats contain the same dates and currency columns, with no empty separator
 column. Excel uses a `Rates` sheet with numeric rates, real date cells displayed as
-`YYYY-MM-DD`, column filters, and a frozen header row and date column. Missing
+`YYYY-MM-DD`, and two header rows: symbols followed by full currency names.
+Names link to currency-specific ECB rate pages or the exact CoinMarketCap page.
+Both header rows and the date column are frozen; filters use the name row.
+Data starts on row 3. Missing
 values stay blank and download failures remain the text `ERROR`. CSV files remain
 the cache used by subsequent daily runs. The daily action commits both formats.
 Both CSV and Excel display rates as plain decimals, never scientific notation,
@@ -117,7 +120,24 @@ Every run:
 Therefore, if GitHub Actions fails for 10 days, the next successful run fills the
 10-day window rather than only downloading one day.
 
-## Crypto source
+## Asset configuration
+
+### Fiat metadata in `assets.json`
+
+The first group, `fiat`, describes the 41 currency columns in the ECB historical
+and daily exports, including discontinued currencies. Each entry contains its
+`symbol`, the full name from the ECB's official `CL_CURRENCY` code list,
+`ecb_url` (the shared daily ZIP download), and `ecb_rates_url` (its currency-specific
+ECB rate page, used by the Excel name hyperlink).
+
+This group is informational only. It does not trigger per-currency downloads,
+add rows or rate columns, or feed fiat entries into the CMC resolver. Fiat rates
+continue to come from the combined ECB exports and their existing cache.
+Additional sources may be integrated separately in future; adding metadata alone
+does not enable a new rate source. `add_asset.py` preserves this group and avoids
+using its symbols for new crypto column names.
+
+### Crypto assets
 
 The initial configured set is 20 major cryptocurrencies plus 5 major stablecoins
 in `assets.json`. Additional coins can be added by their unique CMC URL.
@@ -155,7 +175,7 @@ configuration untouched. Config updates are written atomically. The next normal
 by `add_asset.py`. Commit the changed `assets.json` to make the asset available to
 the scheduled GitHub action.
 
-Configured assets specify `cmc_id` and `first_historical_date` in
+Crypto assets specify `cmc_id` and `first_historical_date` in
 `assets.json`, verified against CoinMarketCap's asset metadata
 (`actualTimeStart`). Daily runs use these fixed IDs directly and make no asset
 map requests. Historical price downloads can still fail or be rate-limited;
@@ -232,6 +252,24 @@ while the historical CSV uses ISO dates:
 
 The historical ECB file is the recovery source for missed runs. The daily file
 is used as an additional freshness/overlay source.
+
+### RUB after the ECB suspension: potential additional source
+
+The ECB last published EUR/RUB on March 1, 2022; later RUB cells remain blank.
+The Bank of Russia is a possible official source for filling that period in a
+future integration. Its [XML interface](https://www.cbr.ru/development/sxml/)
+provides historical EUR observations via `XML_dynamic.asp`, with currency ID
+`R01239`, and the daily export via `XML_daily_eng.asp`. The historical endpoint
+was checked against March 2022 and October 2026 observations on 2026-10-29.
+Its `Value / Nominal` yields RUB per EUR, matching this project's rate convention.
+
+This would be a source change: [ECB suspension](https://www.ecb.europa.eu/services/using-our-site/technical-updates/html/ecb.technical_update220302.en.html)
+and [Bank of Russia methodology](https://www.cbr.ru/eng/press/pr/?file=638538938437943081ENG_PP.htm)
+should be recorded alongside the series. CBR rates have their own effective dates
+(normally the day after setting) and remain valid until superseded; these differ
+from ECB observation dates and the current blank-on-nonpublication-days policy.
+An integration must define that date mapping and source provenance explicitly.
+This research does not enable CBR downloads or change any RUB values.
 
 ### ECB download cache and `--force`
 

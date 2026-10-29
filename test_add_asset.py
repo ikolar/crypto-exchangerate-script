@@ -96,6 +96,16 @@ class AddAssetTests(unittest.TestCase):
             entry, _ = add_asset(URL, self.path)
         self.assertEqual(entry["symbol"], "USD_42")
 
+    def test_informational_fiat_group_is_preserved_and_reserves_its_symbols(self):
+        self.config = {"fiat": [{"symbol": "USD", "name": "US dollar", "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip"}], **self.config}
+        self.path.write_text(json.dumps(self.config))
+        with patch("add_asset.request_with_retries", return_value=page(42, "USD")):
+            entry, _ = add_asset(URL, self.path)
+        updated = json.loads(self.path.read_text())
+        self.assertEqual(list(updated)[0], "fiat")
+        self.assertEqual(updated["fiat"], self.config["fiat"])
+        self.assertEqual(entry["symbol"], "USD_42")
+
     def test_bad_page_or_download_failure_does_not_change_config(self):
         for response in (Mock(url=URL, text="challenge"), Mock(url="https://evil.example/", text="")):
             with patch("add_asset.request_with_retries", return_value=response), self.assertRaises(ValueError):

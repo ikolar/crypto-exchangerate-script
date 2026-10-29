@@ -9,7 +9,7 @@ from unittest.mock import Mock, patch
 from openpyxl import load_workbook
 import pandas as pd
 
-from rates import Asset, main, write_output
+from rates import Asset, main, write_output, add_excel_currency_headers, load_currency_metadata, load_asset_config
 
 
 class OutputTests(unittest.TestCase):
@@ -30,14 +30,19 @@ class OutputTests(unittest.TestCase):
             sheet = workbook["Rates"]
             rows = list(sheet.values)
             self.assertEqual(list(rows[0]), csv.columns.tolist())
-            self.assertEqual(rows[1], (datetime(2026, 10, 24), None, None))
-            self.assertEqual(rows[2], (datetime(2026, 10, 23), 1.13, "ERROR"))
-            self.assertEqual(rows[3], (datetime(2026, 10, 22), 1.12, 0.00001))
-            self.assertEqual(sheet.freeze_panes, "B2")
-            self.assertEqual(sheet.auto_filter.ref, "A1:C4")
-            self.assertEqual(sheet["A2"].number_format, "YYYY-MM-DD")
-            self.assertEqual(sheet["C4"].number_format, "0.##############################")
-            self.assertEqual(sheet["B3"].number_format, "0.##############################")
+            self.assertEqual(rows[1], ("Calendar date", "US dollar", "Bitcoin"))
+            self.assertEqual(rows[2], (datetime(2026, 10, 24), None, None))
+            self.assertEqual(rows[3], (datetime(2026, 10, 23), 1.13, "ERROR"))
+            self.assertEqual(rows[4], (datetime(2026, 10, 22), 1.12, 0.00001))
+            self.assertEqual(sheet.freeze_panes, "B3")
+            self.assertEqual(sheet.auto_filter.ref, "A2:C5")
+            self.assertEqual(sheet["A3"].number_format, "YYYY-MM-DD")
+            self.assertEqual(sheet["C5"].number_format, "0.##############################")
+            self.assertEqual(sheet["B4"].number_format, "0.##############################")
+            self.assertTrue(sheet["B2"].hyperlink.target.endswith("eurofxref-graph-usd.en.html"))
+            self.assertEqual(sheet["C2"].hyperlink.target, "https://coinmarketcap.com/currencies/bitcoin/")
+            add_excel_currency_headers(sheet, load_currency_metadata())
+            self.assertEqual(sheet.max_row, 5)  # Reapplying metadata must not duplicate the header.
             workbook.close()
 
     def test_export_drops_current_and_future_cached_rows(self):
@@ -49,8 +54,22 @@ class OutputTests(unittest.TestCase):
             csv = pd.read_csv(path)
             self.assertEqual(csv["Date"].tolist(), ["2026-10-23"])
             book = load_workbook(path.with_suffix(".xlsx"))
-            self.assertEqual(book["Rates"].max_row, 2)
+            self.assertEqual(book["Rates"].max_row, 3)
             book.close()
+
+    def test_fiat_metadata_is_not_resolved_as_crypto(self):
+        from rates import resolve_assets
+
+        metadata = load_currency_metadata()
+        fiat = [a for a in metadata if "ecb_url" in a]
+        self.assertEqual(len(fiat), 41)
+        self.assertIn("CYP", [a["symbol"] for a in fiat])
+        crypto = load_asset_config()
+        self.assertTrue(all("ecb_url" not in a for a in crypto))
+        with patch("rates.request_with_retries") as request, patch("rates.log"):
+            assets = resolve_assets(Mock(), crypto)
+        self.assertEqual(len(assets), len(crypto))
+        request.assert_not_called()
 
     def test_csv_never_uses_scientific_notation(self):
         dates = pd.date_range("2026-10-20", periods=4)

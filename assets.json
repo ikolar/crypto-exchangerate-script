@@ -1,4 +1,252 @@
 {
+  "fiat": [
+    {
+      "symbol": "USD",
+      "name": "US dollar",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-usd.en.html"
+    },
+    {
+      "symbol": "JPY",
+      "name": "Japanese yen",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-jpy.en.html"
+    },
+    {
+      "symbol": "BGN",
+      "name": "Bulgarian lev",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-bgn.en.html"
+    },
+    {
+      "symbol": "CYP",
+      "name": "Cyprus pound",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-cyp.en.html"
+    },
+    {
+      "symbol": "CZK",
+      "name": "Czech koruna",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-czk.en.html"
+    },
+    {
+      "symbol": "DKK",
+      "name": "Danish krone",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-dkk.en.html"
+    },
+    {
+      "symbol": "EEK",
+      "name": "Estonian kroon",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-eek.en.html"
+    },
+    {
+      "symbol": "GBP",
+      "name": "UK pound sterling",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-gbp.en.html"
+    },
+    {
+      "symbol": "HUF",
+      "name": "Hungarian forint",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-huf.en.html"
+    },
+    {
+      "symbol": "LTL",
+      "name": "Lithuanian litas",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-ltl.en.html"
+    },
+    {
+      "symbol": "LVL",
+      "name": "Latvian lats",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-lvl.en.html"
+    },
+    {
+      "symbol": "MTL",
+      "name": "Maltese lira",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-mtl.en.html"
+    },
+    {
+      "symbol": "PLN",
+      "name": "Polish zloty",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-pln.en.html"
+    },
+    {
+      "symbol": "ROL",
+      "name": "Romanian leu (old)",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-rol.en.html"
+    },
+    {
+      "symbol": "RON",
+      "name": "Romanian leu",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-ron.en.html"
+    },
+    {
+      "symbol": "SEK",
+      "name": "Swedish krona",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-sek.en.html"
+    },
+    {
+      "symbol": "SIT",
+      "name": "Slovenian tolar",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-sit.en.html"
+    },
+    {
+      "symbol": "SKK",
+      "name": "Slovak koruna",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-skk.en.html"
+    },
+    {
+      "symbol": "CHF",
+      "name": "Swiss franc",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-chf.en.html"
+    },
+    {
+      "symbol": "ISK",
+      "name": "Iceland krona",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-isk.en.html"
+    },
+    {
+      "symbol": "NOK",
+      "name": "Norwegian krone",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-nok.en.html"
+    },
+    {
+      "symbol": "HRK",
+      "name": "Croatian kuna",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-hrk.en.html"
+    },
+    {
+      "symbol": "RUB",
+      "name": "Russian rouble",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-rub.en.html"
+    },
+    {
+      "symbol": "TRL",
+      "name": "Turkish lira (old)",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-trl.en.html"
+    },
+    {
+      "symbol": "TRY",
+      "name": "Turkish lira",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-try.en.html"
+    },
+    {
+      "symbol": "AUD",
+      "name": "Australian dollar",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-aud.en.html"
+    },
+    {
+      "symbol": "BRL",
+      "name": "Brazilian real",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-brl.en.html"
+    },
+    {
+      "symbol": "CAD",
+      "name": "Canadian dollar",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-cad.en.html"
+    },
+    {
+      "symbol": "CNY",
+      "name": "Chinese yuan renminbi",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-cny.en.html"
+    },
+    {
+      "symbol": "HKD",
+      "name": "Hong Kong dollar",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-hkd.en.html"
+    },
+    {
+      "symbol": "IDR",
+      "name": "Indonesian rupiah",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-idr.en.html"
+    },
+    {
+      "symbol": "ILS",
+      "name": "Israeli shekel",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-ils.en.html"
+    },
+    {
+      "symbol": "INR",
+      "name": "Indian rupee",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-inr.en.html"
+    },
+    {
+      "symbol": "KRW",
+      "name": "Korean won (Republic)",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-krw.en.html"
+    },
+    {
+      "symbol": "MXN",
+      "name": "Mexican peso",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-mxn.en.html"
+    },
+    {
+      "symbol": "MYR",
+      "name": "Malaysian ringgit",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-myr.en.html"
+    },
+    {
+      "symbol": "NZD",
+      "name": "New Zealand dollar",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-nzd.en.html"
+    },
+    {
+      "symbol": "PHP",
+      "name": "Philippine peso",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-php.en.html"
+    },
+    {
+      "symbol": "SGD",
+      "name": "Singapore dollar",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-sgd.en.html"
+    },
+    {
+      "symbol": "THB",
+      "name": "Thai baht",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-thb.en.html"
+    },
+    {
+      "symbol": "ZAR",
+      "name": "South African rand",
+      "ecb_url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref.zip",
+      "ecb_rates_url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-zar.en.html"
+    }
+  ],
   "major_cryptocurrencies": [
     {
       "symbol": "BTC",

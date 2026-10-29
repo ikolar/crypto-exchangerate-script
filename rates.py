@@ -210,7 +210,7 @@ def read_csv_from_zip(content: bytes, expected_name_fragment: str) -> pd.DataFra
 def clean_ecb_frame(df: pd.DataFrame, daily: bool) -> pd.DataFrame:
     df = df.copy()
     df.columns = [str(c).strip() for c in df.columns]
-    df = df.loc[:, [c for c in df.columns if not c.lower().startswith("unnamed")]]
+    df = df.loc[:, [c for c in df.columns if c and not c.lower().startswith("unnamed")]]
 
     if "Date" not in df.columns:
         raise DownloadFailed(f"ECB CSV missing Date column: {df.columns.tolist()}")
@@ -318,6 +318,11 @@ def download_ecb(
 def load_asset_config() -> list[dict]:
     cfg = json.loads(ASSET_CONFIG.read_text(encoding="utf-8"))
     return cfg["major_cryptocurrencies"] + cfg["stablecoins"]
+
+
+def load_currency_metadata() -> list[dict]:
+    cfg = json.loads(ASSET_CONFIG.read_text(encoding="utf-8"))
+    return cfg.get("fiat", []) + cfg["major_cryptocurrencies"] + cfg["stablecoins"]
 
 
 def resolve_assets(session: requests.Session, config: list[dict]) -> list[Asset]:
@@ -704,6 +709,28 @@ def decimal_rate(value: object) -> str:
     return format(number, "f") if number.is_finite() else ""
 
 
+def add_excel_currency_headers(sheet, metadata: list[dict]) -> None:
+    """Add a linked, human-readable second header row, retaining the symbol row."""
+    from openpyxl.styles import Alignment
+
+    currencies = {asset["symbol"]: asset for asset in metadata}
+    if sheet["A2"].value != "Calendar date":
+        sheet.insert_rows(2)
+    sheet["A2"] = "Calendar date"
+    for column in range(2, sheet.max_column + 1):
+        symbol = sheet.cell(1, column).value
+        asset = currencies.get(symbol, {})
+        cell = sheet.cell(2, column, asset.get("name", symbol))
+        url = asset.get("ecb_rates_url") or asset.get("cmc_url") or asset.get("ecb_url")
+        if url:
+            cell.hyperlink = url
+            cell.style = "Hyperlink"
+        cell.alignment = Alignment(wrap_text=True, vertical="center")
+    sheet.row_dimensions[2].height = 32
+    sheet.freeze_panes = "B3"
+    sheet.auto_filter.ref = f"A2:{sheet.cell(sheet.max_row, sheet.max_column).coordinate}"
+
+
 def write_output(
     fiat: pd.DataFrame,
     crypto: pd.DataFrame,
@@ -738,15 +765,15 @@ def write_output(
             else ("ERROR" if str(value).strip() == "ERROR" else None)
         )
     with pd.ExcelWriter(out.with_suffix(".xlsx"), engine="openpyxl", datetime_format="YYYY-MM-DD") as writer:
-        excel.to_excel(writer, sheet_name="Rates", na_rep="", freeze_panes=(1, 1))
+        excel.to_excel(writer, sheet_name="Rates", na_rep="")
         sheet = writer.sheets["Rates"]
-        sheet.auto_filter.ref = sheet.dimensions
+        add_excel_currency_headers(sheet, load_currency_metadata())
         sheet.column_dimensions["A"].width = 13
-        for cell in sheet["A"][1:]:
+        for cell in sheet["A"][2:]:
             cell.number_format = "YYYY-MM-DD"
         for column in sheet.iter_cols(min_col=2):
             sheet.column_dimensions[column[0].column_letter].width = 24
-            for cell in column[1:]:
+            for cell in column[2:]:
                 if cell.data_type == "n":
                     cell.number_format = "0.##############################"
     return out
