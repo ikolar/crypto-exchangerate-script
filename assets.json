@@ -4,121 +4,141 @@
       "symbol": "BTC",
       "name": "Bitcoin",
       "cmc_id": 1,
-      "first_historical_date": "2010-07-13"
+      "first_historical_date": "2010-07-13",
+      "cmc_url": "https://coinmarketcap.com/currencies/bitcoin/"
     },
     {
       "symbol": "ETH",
       "name": "Ethereum",
       "cmc_id": 1027,
-      "first_historical_date": "2015-08-07"
+      "first_historical_date": "2015-08-07",
+      "cmc_url": "https://coinmarketcap.com/currencies/ethereum/"
     },
     {
       "symbol": "BNB",
       "name": "BNB",
       "cmc_id": 1839,
-      "first_historical_date": "2017-07-25"
+      "first_historical_date": "2017-07-25",
+      "cmc_url": "https://coinmarketcap.com/currencies/bnb/"
     },
     {
       "symbol": "XRP",
       "name": "XRP",
       "cmc_id": 52,
-      "first_historical_date": "2013-08-04"
+      "first_historical_date": "2013-08-04",
+      "cmc_url": "https://coinmarketcap.com/currencies/xrp/"
     },
     {
       "symbol": "SOL",
       "name": "Solana",
       "cmc_id": 5426,
-      "first_historical_date": "2020-04-10"
+      "first_historical_date": "2020-04-10",
+      "cmc_url": "https://coinmarketcap.com/currencies/solana/"
     },
     {
       "symbol": "DOGE",
       "name": "Dogecoin",
       "cmc_id": 74,
-      "first_historical_date": "2013-12-15"
+      "first_historical_date": "2013-12-15",
+      "cmc_url": "https://coinmarketcap.com/currencies/dogecoin/"
     },
     {
       "symbol": "TRX",
       "name": "TRON",
       "cmc_id": 1958,
-      "first_historical_date": "2017-09-13"
+      "first_historical_date": "2017-09-13",
+      "cmc_url": "https://coinmarketcap.com/currencies/tron/"
     },
     {
       "symbol": "ADA",
       "name": "Cardano",
       "cmc_id": 2010,
-      "first_historical_date": "2017-10-01"
+      "first_historical_date": "2017-10-01",
+      "cmc_url": "https://coinmarketcap.com/currencies/cardano/"
     },
     {
       "symbol": "HYPE",
       "name": "Hyperliquid",
       "cmc_id": 32196,
-      "first_historical_date": "2024-11-29"
+      "first_historical_date": "2024-11-29",
+      "cmc_url": "https://coinmarketcap.com/currencies/hyperliquid/"
     },
     {
       "symbol": "XLM",
       "name": "Stellar",
       "cmc_id": 512,
-      "first_historical_date": "2014-08-05"
+      "first_historical_date": "2014-08-05",
+      "cmc_url": "https://coinmarketcap.com/currencies/stellar/"
     },
     {
       "symbol": "BCH",
       "name": "Bitcoin Cash",
       "cmc_id": 1831,
-      "first_historical_date": "2017-07-23"
+      "first_historical_date": "2017-07-23",
+      "cmc_url": "https://coinmarketcap.com/currencies/bitcoin-cash/"
     },
     {
       "symbol": "LINK",
       "name": "Chainlink",
       "cmc_id": 1975,
-      "first_historical_date": "2017-09-20"
+      "first_historical_date": "2017-09-20",
+      "cmc_url": "https://coinmarketcap.com/currencies/chainlink/"
     },
     {
       "symbol": "SUI",
       "name": "Sui",
       "cmc_id": 20947,
-      "first_historical_date": "2023-05-03"
+      "first_historical_date": "2023-05-03",
+      "cmc_url": "https://coinmarketcap.com/currencies/sui/"
     },
     {
       "symbol": "AVAX",
       "name": "Avalanche",
       "cmc_id": 5805,
-      "first_historical_date": "2020-09-22"
+      "first_historical_date": "2020-09-22",
+      "cmc_url": "https://coinmarketcap.com/currencies/avalanche/"
     },
     {
       "symbol": "HBAR",
       "name": "Hedera",
       "cmc_id": 4642,
-      "first_historical_date": "2019-09-17"
+      "first_historical_date": "2019-09-17",
+      "cmc_url": "https://coinmarketcap.com/currencies/hedera/"
     },
     {
       "symbol": "LTC",
       "name": "Litecoin",
       "cmc_id": 2,
-      "first_historical_date": "2013-04-28"
+      "first_historical_date": "2013-04-28",
+      "cmc_url": "https://coinmarketcap.com/currencies/litecoin/"
     },
     {
       "symbol": "TON",
       "name": "Toncoin",
       "cmc_id": 11419,
-      "first_historical_date": "2021-08-26"
+      "first_historical_date": "2021-08-26",
+      "cmc_url": "https://coinmarketcap.com/currencies/gram/"
     },
     {
       "symbol": "SHIB",
       "name": "Shiba Inu",
       "cmc_id": 5994,
-      "first_historical_date": "2020-08-01"
+      "first_historical_date": "2020-08-01",
+      "cmc_url": "https://coinmarketcap.com/currencies/shiba-inu/"
     },
     {
       "symbol": "DOT",
       "name": "Polkadot",
       "cmc_id": 6636,
-      "first_historical_date": "2020-08-20"
+      "first_historical_date": "2020-08-20",
+      "cmc_url": "https://coinmarketcap.com/currencies/polkadot-new/"
     },
     {
       "symbol": "AAVE",
       "name": "Aave",
       "cmc_id": 7278,
-      "first_historical_date": "2020-10-04"
+      "first_historical_date": "2020-10-04",
+      "cmc_url": "https://coinmarketcap.com/currencies/aave/"
     }
   ],
   "stablecoins": [
@@ -126,31 +146,36 @@
       "symbol": "USDT",
       "name": "Tether USDt",
       "cmc_id": 825,
-      "first_historical_date": "2015-02-25"
+      "first_historical_date": "2015-02-25",
+      "cmc_url": "https://coinmarketcap.com/currencies/tether/"
     },
     {
       "symbol": "USDC",
       "name": "USDC",
       "cmc_id": 3408,
-      "first_historical_date": "2018-10-08"
+      "first_historical_date": "2018-10-08",
+      "cmc_url": "https://coinmarketcap.com/currencies/usd-coin/"
     },
     {
       "symbol": "USDE",
       "name": "Ethena USDe",
       "cmc_id": 29470,
-      "first_historical_date": "2023-12-31"
+      "first_historical_date": "2023-12-31",
+      "cmc_url": "https://coinmarketcap.com/currencies/ethena-usde/"
     },
     {
       "symbol": "USDS",
       "name": "USDS",
       "cmc_id": 33039,
-      "first_historical_date": "2024-09-19"
+      "first_historical_date": "2024-09-19",
+      "cmc_url": "https://coinmarketcap.com/currencies/usds/"
     },
     {
       "symbol": "DAI",
       "name": "Dai",
       "cmc_id": 4943,
-      "first_historical_date": "2019-11-22"
+      "first_historical_date": "2019-11-22",
+      "cmc_url": "https://coinmarketcap.com/currencies/multi-collateral-dai/"
     }
   ]
 }
