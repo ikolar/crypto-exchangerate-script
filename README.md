@@ -119,10 +119,43 @@ Therefore, if GitHub Actions fails for 10 days, the next successful run fills th
 
 ## Crypto source
 
-The configured set is 20 major cryptocurrencies plus 5 major stablecoins in
-`assets.json`.
+The initial configured set is 20 major cryptocurrencies plus 5 major stablecoins
+in `assets.json`. Additional coins can be added by their unique CMC URL.
 
-All 25 configured assets specify `cmc_id` and `first_historical_date` in
+### Add an asset by URL
+
+```bash
+python add_asset.py 'https://coinmarketcap.com/currencies/tontoken/'
+```
+
+The tool reads that specific CMC page to obtain its unique ID, canonical URL,
+current name/ticker, and first historical date. It never searches by name or
+ticker. It adds the coin to `major_cryptocurrencies` by default; use
+`--group stablecoins` for a stablecoin or `--config /path/to/assets.json` for
+another configuration. Existing records are preserved, and an already configured
+CMC ID is reported without adding a duplicate, even if its name or URL changed.
+
+`symbol` is the unique CSV/Excel column name. If a ticker is already in use, the
+new column becomes `TICKER_CMCID`. For example, adding TON Token (CMC 6890) creates
+`TON_6890` and leaves the existing `TON` column (Gram/former Toncoin, CMC 11419)
+unchanged. The original ticker is stored as `cmc_symbol`. Repeated names are
+allowed; output column names must be unique. Known fiat columns in the latest
+snapshot are also checked for collisions.
+
+Preview without editing the configuration, or choose a different column name:
+
+```bash
+python add_asset.py 'https://coinmarketcap.com/currencies/tontoken/' --dry-run
+python add_asset.py 'https://coinmarketcap.com/currencies/tontoken/' --symbol TON_TOKEN
+```
+
+Failed page downloads, invalid URLs, and missing historical metadata leave the
+configuration untouched. Config updates are written atomically. The next normal
+`rates.py` run fetches the new coin's history; existing snapshots are not rewritten
+by `add_asset.py`. Commit the changed `assets.json` to make the asset available to
+the scheduled GitHub action.
+
+Configured assets specify `cmc_id` and `first_historical_date` in
 `assets.json`, verified against CoinMarketCap's asset metadata
 (`actualTimeStart`). Daily runs use these fixed IDs directly and make no asset
 map requests. Historical price downloads can still fail or be rate-limited;

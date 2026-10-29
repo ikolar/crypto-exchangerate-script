@@ -32,7 +32,7 @@ class CryptoRecoveryTests(unittest.TestCase):
         config = load_asset_config()
         with patch("rates.request_with_retries") as request:
             assets = resolve_assets(Mock(), config)
-        self.assertEqual(len(assets), 25)
+        self.assertEqual(len(assets), len(config))
         self.assertEqual(len({a.cmc_id for a in assets}), len(assets))
         for asset in assets:
             self.assertGreater(asset.cmc_id, 0)
